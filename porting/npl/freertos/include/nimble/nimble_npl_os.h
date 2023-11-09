@@ -281,15 +281,17 @@ ble_npl_hw_set_isr(int irqn, void (*addr)(void))
 static inline uint32_t
 ble_npl_hw_enter_critical(void)
 {
-    vPortEnterCritical();
-    return 0;
+    uint32_t ctx = __get_PRIMASK();
+    __disable_irq();
+    return (ctx & 0x01);
 }
 
 static inline void
 ble_npl_hw_exit_critical(uint32_t ctx)
 {
-    vPortExitCritical();
-
+    if (!ctx) {
+        __enable_irq();
+    }
 }
 
 #ifdef __cplusplus

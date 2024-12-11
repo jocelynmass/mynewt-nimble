@@ -20,7 +20,6 @@
 #include <stddef.h>
 #include "os/os.h"
 #include "sysinit/sysinit.h"
-#include "host/ble_hs.h"
 #include "nimble/nimble_port.h"
 #include "nimble/transport.h"
 #if NIMBLE_CFG_CONTROLLER
@@ -47,7 +46,7 @@ nimble_port_init(void)
 
 #if NIMBLE_CFG_CONTROLLER
 #ifndef RIOT_VERSION
-    hal_timer_init(5, NULL);
+    hal_timer_init(MYNEWT_VAL_OS_CPUTIME_TIMER_NUM, NULL);
     os_cputime_init(32768);
 #endif
 #endif

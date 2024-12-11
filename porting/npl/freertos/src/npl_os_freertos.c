@@ -21,6 +21,7 @@
 #include <stddef.h>
 #include <string.h>
 #include "nimble/nimble_npl.h"
+#include "mcu.h"
 
 /* Include the file that defines the SCB for your HW. */
 #ifdef NIMBLE_NPL_OS_EXTRA_INCLUDE
@@ -30,8 +31,7 @@
 static inline bool
 in_isr(void)
 {
-    /* XXX hw specific! */
-    return (SCB->ICSR & SCB_ICSR_VECTACTIVE_Msk) != 0;
+    return mcu_in_isr();
 }
 
 struct ble_npl_event *

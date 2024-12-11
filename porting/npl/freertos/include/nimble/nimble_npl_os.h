@@ -22,12 +22,14 @@
 
 #include <assert.h>
 #include <stdint.h>
+#include <stddef.h>
 #include <string.h>
 #include "FreeRTOS.h"
 #include "queue.h"
 #include "semphr.h"
 #include "task.h"
 #include "timers.h"
+#include "cmsis_gcc.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -38,6 +38,7 @@
 #include "controller/ble_phy_trace.h"
 #include "controller/ble_ll.h"
 #include "nrfx.h"
+#define NRF53_SERIES
 #if MYNEWT
 #ifdef NRF52_SERIES
 #include <mcu/nrf52_clock.h>
@@ -2305,11 +2306,59 @@ ble_phy_dtm_carrier(uint8_t rf_channel)
 }
 #endif
 #endif
+static uint8_t nrf5340_net_clock_hfxo_refcnt;
+int
+nrf5340_net_clock_hfxo_request(void)
+{
+    int started;
+    uint32_t ctx;
+
+    started = 0;
+    OS_ENTER_CRITICAL(ctx);
+    assert(nrf5340_net_clock_hfxo_refcnt < 0xff);
+    if (nrf5340_net_clock_hfxo_refcnt == 0) {
+        NRF_CLOCK_NS->TASKS_HFCLKSTART = 1;
+        started = 1;
+    }
+    ++nrf5340_net_clock_hfxo_refcnt;
+    OS_EXIT_CRITICAL(ctx);
+
+    return started;
+}
+
+/**
+ * Release the HFXO. This means that the caller no longer needs the HFXO to be
+ * turned on. Each call to release should have been preceeded by a corresponding
+ * call to request the HFXO
+ *
+ *
+ * @return int 0: HFXO not stopped by this call (others using it) 1: HFXO
+ *         stopped.
+ */
+
+int
+nrf5340_net_clock_hfxo_release(void)
+{
+    int stopped;
+    uint32_t ctx;
+
+    stopped = 0;
+    OS_ENTER_CRITICAL(ctx);
+    assert(nrf5340_net_clock_hfxo_refcnt != 0);
+    --nrf5340_net_clock_hfxo_refcnt;
+    if (nrf5340_net_clock_hfxo_refcnt == 0) {
+        NRF_CLOCK_NS->TASKS_HFCLKSTOP = 1;
+        stopped = 1;
+    }
+    OS_EXIT_CRITICAL(ctx);
+
+    return stopped;
+}
 
 void
 ble_phy_rfclk_enable(void)
 {
-#if MYNEWT || defined(RIOT_VERSION)
+#if MYNEWT || defined(RIOT_VERSION) || defined(FREERTOS)
 #ifdef NRF52_SERIES
     nrf52_clock_hfxo_request();
 #endif
@@ -2324,7 +2373,7 @@ ble_phy_rfclk_enable(void)
 void
 ble_phy_rfclk_disable(void)
 {
-#if MYNEWT || defined(RIOT_VERSION)
+#if MYNEWT || defined(RIOT_VERSION) || defined(FREERTOS)
 #ifdef NRF52_SERIES
     nrf52_clock_hfxo_release();
 #endif

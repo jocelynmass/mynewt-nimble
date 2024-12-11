@@ -223,10 +223,13 @@ hci_ipc_init(volatile struct hci_ipc_shm *shm, struct hci_ipc_sm *sm)
     memset(sm, 0, sizeof(*sm));
 
 #if MYNEWT_VAL(BLE_CONTROLLER)
+    
     while (shm->n2a_num_evt_disc == 0) {
         /* Wait until app side initializes credits */
+        vTaskDelay(1);
     }
 #else
+    
     shm->n2a_num_acl = MYNEWT_VAL(BLE_TRANSPORT_ACL_FROM_LL_COUNT);
     shm->n2a_num_evt = MYNEWT_VAL(BLE_TRANSPORT_EVT_COUNT);
     shm->n2a_num_evt_disc = MYNEWT_VAL(BLE_TRANSPORT_EVT_DISCARDABLE_COUNT);

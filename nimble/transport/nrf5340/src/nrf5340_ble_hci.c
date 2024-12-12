@@ -25,6 +25,7 @@
 #include <ipc_nrf5340/ipc_nrf5340.h>
 #include <nimble/transport.h>
 #include <nimble/transport/hci_ipc.h>
+#include <nimble/transport/transport_ipc.h>
 
 #if MYNEWT_VAL(BLE_CONTROLLER)
 #define IPC_TX_CHANNEL 0

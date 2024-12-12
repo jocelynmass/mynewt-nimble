@@ -28,9 +28,11 @@ extern "C" {
 
 
 /* NOTE: These APIs shall only be used by IPC transports */
-
+#ifndef BLE_TRANSPORT_IPC
 #define BLE_TRANSPORT_IPC \
     MYNEWT_PKG_apache_mynewt_nimble__nimble_transport_common_hci_ipc
+#endif
+
 #define BLE_TRANSPORT_IPC_ON_HS \
     (BLE_TRANSPORT_IPC && !MYNEWT_VAL(BLE_CONTROLLER))
 #define BLE_TRANSPORT_IPC_ON_LL \

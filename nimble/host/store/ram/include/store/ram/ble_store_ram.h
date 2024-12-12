@@ -37,6 +37,7 @@ int ble_store_ram_read(int obj_type, const union ble_store_key *key,
 int ble_store_ram_write(int obj_type, const union ble_store_value *val);
 int ble_store_ram_delete(int obj_type, const union ble_store_key *key);
 
+void ble_store_ram_init(void);
 #ifdef __cplusplus
 }
 #endif

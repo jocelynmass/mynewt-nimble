@@ -42,6 +42,7 @@ typedef void (*ipc_nrf5340_recv_cb)(int channel, void *user_data);
  */
 void ipc_nrf5340_init(void);
 
+void ipc_nrf5340_netcore_init(void);
 /**
  * Reset IPC and NetCore. Can be used to re-sync with Network Core without
  * restarting Application Core.
@@ -209,9 +210,7 @@ const void *ipc_nrf5340_net_image_get(uint32_t *size);
 #endif
 
 
-#if MYNEWT_PKG_apache_mynewt_nimble__nimble_transport_common_hci_ipc
 volatile struct hci_ipc_shm *ipc_nrf5340_hci_shm_get(void);
-#endif
 
 #ifdef __cplusplus
 }
